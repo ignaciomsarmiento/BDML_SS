@@ -1,2 +1,0 @@
-\beamer@sectionintoc {1}{Prediction and loss functions}{3}{0}{1}
-\beamer@sectionintoc {2}{GitHub}{25}{0}{2}

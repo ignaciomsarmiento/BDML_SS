@@ -1,4 +1,0 @@
-\beamer@sectionintoc {1}{About the Course}{3}{0}{1}
-\beamer@sectionintoc {2}{Machine learning is all about prediction}{7}{0}{2}
-\beamer@sectionintoc {3}{Prediction vs Causality}{13}{0}{3}
-\beamer@sectionintoc {4}{Prediction and loss functions}{25}{0}{4}
