@@ -1,0 +1,18 @@
+\frametitle{Review}
+
+
+\begin{itemize}
+ \item This Week: The predictive paradigm and linear regression
+ \medskip
+    \begin{itemize}
+        \item Machine Learning is all about prediction
+         \medskip
+         \item ML targets something different than causal inference, they can complement each other
+         \medskip
+         \item ML best kept secret: tolerating some bias is possible to reduce V($\hat f(X)$) and lower MSE
+         \medskip
+      \end{itemize}
+  \item Next Week: Out of sample prediction. Overfit, Resampling Methods, Webscrapping
+
+    \end{itemize}
+
