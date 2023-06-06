@@ -1,0 +1,17 @@
+\frametitle{Review}
+
+
+\begin{itemize}
+ \item The predictive paradigm
+ \medskip
+    \begin{itemize}
+        \item Machine Learning is all about prediction
+         \medskip
+         \item ML targets something different than causal inference, they can complement each other
+         \medskip
+
+      \end{itemize}
+  \item Next Class: Bias/Variance Trade Off and Linear Regression
+
+    \end{itemize}
+
