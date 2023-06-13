@@ -491,7 +491,7 @@ y_{i}=\beta_{0}+\beta_{1}x_{1i}+\beta_{2}x_{2i}+u
 
 \begin{itemize}
   \item Let's go back to our two variable model
-  \medskip
+  \medskip 
   \begin{align}
     y_{i}=\beta_{0}+\beta_{1}x_{1i}+\beta_{2}x_{2i}+u
   \end{align}
@@ -501,8 +501,8 @@ y_{i}=\beta_{0}+\beta_{1}x_{1i}+\beta_{2}x_{2i}+u
 \hat{\beta}_{2}=\frac{\sum(x_{1i}-\bar{x}_{1})^{2}\sum(x_{2i}-\bar{x}_{2})y_{i}-\left( \sum x_{1i}x_{2i}-n\bar{x}_{1}\bar{x}_{2} \right)\sum(x_{1i}-\bar{x}_{1})y_{i}}{\sum(x_{1i}-\bar{x}_{1})^{2}\sum(x_{2i}-\bar{x}_{2})^{2}-\left( \sum x_{1i}x_{2i}-n\bar{x}_{1}\bar{x}_{2}\right)^{2}}
 \end{align}
 \end{itemize}
-\end{frame}
 
+\end{frame}
 %----------------------------------------------------------------------%
 \begin{frame}
 \frametitle{ Uncertainty in Linear Regression}
@@ -519,6 +519,20 @@ y_{i}=\beta_{0}+\beta_{1}x_{1i}+\beta_{2}x_{2i}+u
   \end{align}
   
 \end{itemize}
+
+
+\end{frame}
+%----------------------------------------------------------------------%
+\begin{frame}
+\frametitle{ Uncertainty and Resampling }
+
+\begin{itemize}
+\item Sometimes the analytical expression of the variance can be quite complicated.
+\medskip
+\item In these cases we can use the bootstrap
+\medskip
+\item The bootstrap provides a way to perform statistical inference by resampling from the sample.
+\end{itemize}
 \end{frame}
 %----------------------------------------------------------------------%
 \section{What are resampling methods?}
@@ -533,8 +547,6 @@ y_{i}=\beta_{0}+\beta_{1}x_{1i}+\beta_{2}x_{2i}+u
   \item Parameter Assessment: estimate standard errors
   \medskip
   \item Model Assessment: estimate test error rates 
-  \medskip
-  \item Model Selection: select the appropriate level of model flexibility
   \medskip
   \item They are computationally expensive! But these days we have powerful computers
 \end{itemize}
