@@ -80,7 +80,7 @@ where w is the  wage, and X is a matrix that includes potential explanatory vari
 
 were $ln(w)$ is the logarithm of the wage.
 
-To illustrate I'm going to use a sample of the NLSY97. The NLSY97 is  a nationally representative sample of 8,984 men and women born during the years 1980 through 1984 and living in the United States at the time of the initial survey in 1997.  Participants were ages 12 to 16 as of December 31, 1996.  Interviews were conducted annually from 1997 to 2011 and biennially since then.  The ongoing cohort has been surveyed 18 times as of date.  Data are available from Round 1 (1997-98) through Round 19 (2019-20). 
+To illustrate I'm going to use a sample of the NLSY97. The NLSY97 is  a nationally representative sample of 8,984 men and women born during the years 1980 through 1984 and living in the United States at the time of the initial survey in 1997.  Participants were ages 12 to 16 as of December 31, 1996.  Interviews were conducted annually from 1997 to 2011 and biennially since then.  
 
 
 Let's load the packages and the data set:
@@ -97,7 +97,7 @@ nlsy <- read_csv('https://raw.githubusercontent.com/ignaciomsarmiento/datasets/m
 what are the predictors that I have available?
 
 ```{r}
-glimpse(nlsy)
+glimpse(nlsy) 
 ```
 
 Let's keep a couple of these predictors and look at their statistics
