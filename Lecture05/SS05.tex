@@ -192,6 +192,56 @@
 \section{Recap: Predicción y Overfit} 
 %----------------------------------------------------------------------%
 
+%----------------------------------------------------------------------%
+\begin{frame}[fragile, noframenumbering]
+\frametitle{Overfit y Predicción fuera de Muestra}
+
+
+        \begin{figure}[H] \centering
+            \captionsetup{justification=centering}
+              \includegraphics[scale=0.4]{figures/fig_1a.pdf}
+ \end{figure}
+
+
+\end{frame}
+
+%----------------------------------------------------------------------%
+\begin{frame}[fragile, noframenumbering]
+\frametitle{Overfit y Predicción fuera de Muestra}
+
+
+        \begin{figure}[H] \centering
+            \captionsetup{justification=centering}
+              \includegraphics[scale=0.4]{figures/fig_1_poly1.pdf}
+ \end{figure}
+
+
+
+\end{frame}
+
+%----------------------------------------------------------------------%
+\begin{frame}[fragile, noframenumbering]
+\frametitle{Overfit y Predicción fuera de Muestra}
+
+
+        \begin{figure}[H] \centering
+            \captionsetup{justification=centering}
+              \includegraphics[scale=0.4]{figures/fig_1_poly5.pdf}
+ \end{figure}
+
+\end{frame}
+
+%----------------------------------------------------------------------%
+\begin{frame}[fragile, noframenumbering]
+\frametitle{Overfit y Predicción fuera de Muestra}
+
+
+        \begin{figure}[H] \centering
+            \captionsetup{justification=centering}
+              \includegraphics[scale=0.4]{figures/fig_all_sample.pdf}
+ \end{figure}
+
+\end{frame}
 
 %----------------------------------------------------------------------%
 \begin{frame}[fragile, noframenumbering]
@@ -201,6 +251,19 @@
         \begin{figure}[H] \centering
             \captionsetup{justification=centering}
               \includegraphics[scale=0.4]{figures/fig_all_sample_polys.pdf}
+ \end{figure}
+
+
+\end{frame}
+
+%----------------------------------------------------------------------%
+\begin{frame}[fragile, noframenumbering]
+\frametitle{Overfit y Predicción fuera de Muestra}
+
+
+        \begin{figure}[H] \centering
+            \captionsetup{justification=centering}
+              \includegraphics[scale=0.4]{figures/fig_all_sample_polys_erors_all.pdf}
  \end{figure}
 
 
@@ -224,7 +287,6 @@
 
 \begin{itemize}
   \item ML nos interesa la predicción fuera de muestra
-  \pause
   \medskip
   \item Overfit: modelos complejos predicen muy bien dentro de muestra, pero tienden a hacer un mal trabajo fuera de muestra 
   \medskip
@@ -263,6 +325,27 @@
 %----------------------------------------------------------------------%
 \section{Regularización}
 %----------------------------------------------------------------------%
+\begin{frame}<1>[label=motivacion]
+\frametitle{Regularización: Motivación}
+
+\begin{itemize}
+\item Las técnicas econometricas estándar no están optimizadas para la predicción porque se enfocan en la insesgadez.
+\medskip
+\item OLS por ejemplo es el mejor estimador lineal {\it insesgado}
+\medskip
+\item OLS minimiza el error {\it ``dentro de muestra''}, eligiendo $\beta$ de forma tal que 
+
+
+\begin{align}
+min_{\beta} E(\beta) = \sum_{i=1}^n (y_i-\beta_0 - x_{i1}\beta_1 - \dots - x_{ip}\beta_p)^2 
+\end{align}
+
+\pause
+\item pero para predicción, no estamos interesados en hacer un buen trabajo dentro de muestra 
+\medskip
+\item Queremos hacer un buen trabajo, {\bf fuera de muestra}
+\end{itemize}
+\end{frame}
 %----------------------------------------------------------------------%
 \subsection{Recap: OLS Mechanics}
 %----------------------------------------------------------------------%
@@ -278,7 +361,7 @@
               \includegraphics[scale=0.4]{figures/lasso0.pdf}
  \end{figure}
 
-Solution
+Solución
 
 \begin{align}
 \frac{\partial E(\beta)}{\partial \beta}= \sum_{i=1}^n 2(y_i-x_i \beta)(-x_i )
@@ -315,8 +398,36 @@ Fuente: \url{https://allmodelsarewrong.github.io}
 
 \href{https://cede.uniandes.edu.co/OLS/}{App}
 \end{frame}
+
+%----------------------------------------------------------------------%
+%----------------------------------------------------------------------%
+\againframe<2>{motivacion}
+%----------------------------------------------------------------------%
+%----------------------------------------------------------------------%
 %----------------------------------------------------------------------%
 \subsection{Ridge}
+%----------------------------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{Ridge}
+  \begin{itemize}
+    \item Asegurar cero sesgo dentro de muestra crea problemas fuera de muestra: trade-off Sesgo-Varianza
+    \medskip
+    \item Las técnicas de machine learning fueron desarrolladas para hacer este trade-off de forma empírica.
+    \medskip
+    \item Vamos a proponer modelos del estilo
+
+
+\begin{align}
+min_{\beta} E(\beta) = \sum_{i=1}^n (y_i-\beta_0 - x_{i1}\beta_1 - \dots - x_{ip}\beta_p)^2 + \lambda \sum_{j=1}^p R(\beta_j)
+\end{align}
+
+\item donde $R$ es un regularizador que penaliza funciones que crean varianza
+\medskip
+\item Explícitamente en la minimización incluimos un termino de sesgo y un termino de varianza.
+
+
+  \end{itemize}
+\end{frame}
 %----------------------------------------------------------------------%
 \begin{frame}[fragile]
 \frametitle{Ridge}
@@ -443,133 +554,25 @@ Fuente: \url{https://allmodelsarewrong.github.io}
 \end{figure}
 
 \end{frame}
-%----------------------------------------------------------------------%
-\begin{frame}[fragile]
-\frametitle{Formalmente}
 
-
-
-\begin{itemize}
-  \item Las $Xs$ están centradas, media cero.
-  \medskip
-  \item OLS 
-  \begin{itemize}
-    \item Regresión Simple $y= \beta x + u$ 
-        \begin{equation*}
-          \hat{\beta}=\frac{\sum x_iy_i }{\sum x_i^2 }
-        \end{equation*}
-        \medskip
-    \item Regresión múltiple y álgebra matricial
-    \begin{equation*}
-    \hat{\beta}_{OLS}  = (X'X)^{-1} X' y
-    \end{equation*}
-    
-  \end{itemize}
-  \item Ridge 
-    \begin{equation*}
-      \hat{\beta}_{ridge} = (X'X+\lambda I_p)^{-1} X' y
-    \end{equation*}
-\end{itemize}
-
-\end{frame}
-%----------------------------------------------------------------------%
-\begin{frame}[fragile]
-\frametitle{Formalmente}
- \begin{equation*}
-      \hat{\beta}_{ridge} = (X'X+\lambda I_p)^{-1} X' y
-    \end{equation*}
-
-\begin{itemize}
-  \item Ridge es sesgado $E(\hat{\beta}_{ridge}) \neq \beta$
-  \medskip
-  \item Pero la varianza es menor que la de OLS
-  \medskip
-  \item Para ciertos valores del parámetro $\lambda$ $MSE_{OLS}>MSE_{ridge}$
-\end{itemize}
-
-
-
-\end{frame}
-%----------------------------------------------------------------------%
-\begin{frame}[fragile]
-\frametitle{Consequencias: Ridge no es invariante a las escala}
-\begin{itemize}
-  \item La escala de las variables importa en Ridge, mientras que en OLS no.
-  \medskip
-  \item Supongamos $z=c*x$
-  \item Vamos a mostrar que $\hat{y}^z_{i}=\hat{y}^x_{i}$
-  \item Partamos de hacer la regression
-  \begin{align}
-  y_{i}=\beta^z_{0}+\beta^z_{1}z_i+u
-  \end{align}
-  \begin{align}
-  \hat{\beta}^z_{1} = \frac{\sum(z_{i}-\bar{z})(y_{i}-\bar{y})}{\sum(z_{i}-\bar{z})^{2}}
-  \end{align}
-  \item Pero $z=c*x$
-  \begin{align}
-  \hat{\beta}^z_{1} &= \frac{\sum(cx_{i}-c\bar{x})(y_{i}-\bar{y})}{\sum(cx_{i}-\bar{cx})^{2}} \\
-                    &= \frac{1}{c}\frac{\sum(x_{i}-\bar{x})(y_{i}-\bar{y})}{\sum(x_{i}-\bar{x})^{2}} \\
-                    &= \frac{1}{c}\hat{\beta}^x_1
-  \end{align}
-
-\end{itemize}
-  \end{frame}
-
-%----------------------------------------------------------------------%
-\begin{frame}[fragile]
-\frametitle{Consequencias: Ridge no es invariante a las escala}
-\begin{itemize}
-  \item Entonces
-  \begin{align}
-  \hat{\beta}^z_{1}z_i &=\hat{\beta}^z_{1}cx_i \\
-  &=\frac{1}{c}\hat{\beta}^x_1cx_i \\
-  &=\hat{\beta}^x_1 x_i \\
-  \end{align}
-  
-  
-\end{itemize}
-\end{frame}
-%----------------------------------------------------------------------%
-\begin{frame}[fragile]
-\frametitle{Consequencias: Ridge no es invariante a las escala}
-\begin{itemize}
-  
-  \item En términos generales, si $Z=cX$
-  \begin{align*}
-    \hat{\beta}^Z_{OLS}  &= (Z'Z)^{-1} Z' y \\
-                         &= ((cX)'(cX))^{-1} (cX)' y \\
-                         &= \frac{c}{c^2}(X'X)^{-1} X' y \\
-                         &= \frac{1}{c}(X'X)^{-1} X' y  \\
-                         &= \frac{1}{c} \hat{\beta}^X_{OLS}
-  \end{align*} 
-\end{itemize}
-
-  \end{frame}
-%----------------------------------------------------------------------%
-\begin{frame}[fragile]
-\frametitle{Consequencias: Ridge no es invariante a las escala}
-\begin{itemize}
-  \item Entonces
-  \begin{align*}
-  \hat{\beta}^Z_{OLS} Z  &=  \frac{1}{c} \hat{\beta}^X_{OLS} cX \\
-                         &= \hat{\beta}^X_{OLS} X
-  \end{align*} 
-\medskip
-  \item Con Ridge esto no funciona
-    \begin{align*}
-  \hat{\beta}^Z_{Ridge} Z &\neq  \hat{\beta}^X_{Ridge} X
-  \end{align*} 
-
-\item Es importante estandarizar las variables (la mayoría de los softwares lo hace automáticamente)
-\end{itemize}
-
-
-\end{frame}
 
 %----------------------------------------------------------------------%
 \begin{frame}[fragile]
 \frametitle{Recap}
-
+\begin{itemize}
+    \item Asegurar cero sesgo dentro de muestra crea problemas fuera de muestra: trade-off Sesgo-Varianza
+    \medskip
+    \item Las técnicas de machine learning fueron desarrolladas para hacer este trade-off de forma empírica.
+    \medskip
+    \begin{align}
+min_{\beta} E(\beta) = \sum_{i=1}^n (y_i-\beta_0 - x_{i1}\beta_1 - \dots - x_{ip}\beta_p)^2 + \lambda \sum_{j=1}^p R(\beta_j)
+\end{align}
+\item $\lambda$ es el precio al que hacemos este trade off
+\medskip
+\item Próxima clase: como elegimos este $\lambda$
+ 
+\end{itemize}
+ 
 
  \end{frame}
 
