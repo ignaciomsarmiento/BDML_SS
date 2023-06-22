@@ -681,6 +681,25 @@ min_{\beta} R(\beta) = \sum_{i=1}^n (y_i-\sum^k_{j=1}x_{ij}'\beta_j)^2 + \lambda
 %----------------------------------------------------------------------%
 \begin{frame}[fragile]
 \frametitle{Lasso}
+
+\begin{itemize}
+\item Para un $\lambda \geq 0$ dado, consideremos el siguiente problema de optimización
+
+
+\begin{align}
+min_{\beta} E(\beta) = \sum_{i=1}^n (y_i-\beta_0 - x_{i1}\beta_1 - \dots - x_{ip}\beta_p)^2 + \lambda \sum_{j=1}^p |\beta_j| 
+\end{align}
+
+\medskip
+\pause
+  \begin{itemize}
+    \item  ``LASSO's free lunch'': selecciona automáticamente los predictores que van en el modelo ($\beta_j \neq 0$) y los que no   ($\beta_j = 0$)
+    \medskip
+    \item Por qué? Los coeficientes que no van son soluciones de esquina
+    \medskip
+    \item  $L(\beta)$ es no differentiable
+  \end{itemize}
+\end{itemize}
 \end{frame}
 %----------------------------------------------------------------------%
 \section{Recap}
@@ -690,8 +709,33 @@ min_{\beta} R(\beta) = \sum_{i=1}^n (y_i-\sum^k_{j=1}x_{ij}'\beta_j)^2 + \lambda
 
 \begin{itemize}
 
+    \item El objetivo es predecir bien fuera de muestra, donde nos enfrentamos al trade-off Sesgo-Varianza
+    
+    \medskip
+    \item Propusimos modelos
 
-\item Próxima clase: detalles de lasso
+
+    \begin{align}
+        min_{\beta} E(\beta) = \sum_{i=1}^n (y_i-\beta_0 - x_{i1}\beta_1 - \dots - x_{ip}\beta_p)^2 + \lambda \sum_{j=1}^p R(\beta_j)
+    \end{align}
+    \begin{itemize}
+    \item donde $R$ es un regularizador que penaliza funciones que crean varianza
+    \medskip
+    \item Explícitamente en la minimización incluimos un termino de sesgo y un termino de varianza.
+        
+
+    \medskip
+        \begin{itemize}
+            \item Ridge
+            \medskip
+            \item Lasso
+            \medskip
+            \item Elastic Net
+        \end{itemize}
+\end{itemize}
+
+  
+    \item Próxima clase: detalles de Lasso y EN
  
 \end{itemize}
  
