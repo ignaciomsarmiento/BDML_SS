@@ -1,0 +1,368 @@
+---
+jupyter:
+  jupytext:
+    formats: ipynb,Rmd
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.14.4
+  kernelspec:
+    display_name: R
+    language: R
+    name: ir
+---
+
+<div >
+<img src = "../banner.jpg" />
+</div>
+
+
+<a target="_blank" href="https://colab.research.google.com/github/ignaciomsarmiento/BDML_SS/blob/main/Lecture07/Notebook_SS0.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+
+
+
+# Spatial Data Cross-validation
+
+<!-- #region -->
+## Predicting House Prices
+
+Our objective today is to construct a model to predict house prices. From Rosen's landmark paper "Hedonic Prices and Implicit Markets: Product Differentiation in Pure Competition" (1974), we know that a vector of its characteristics describes a differentiated good.
+
+In the case of a house, these characteristics may include structural attributes (e.g., number of bedrooms), neighborhood public services (e.g., local school quality), and local amenities (e.g., crime, air quality, etc). Thus, we can write the market price of the house as:
+
+$$
+Price=f(structural attributes,amenities,...)
+$$
+
+
+However, Rosen's theory doesn't tell us much about the functional form of $f$. 
+<!-- #endregion -->
+
+### The Ames Housing Data
+
+
+For this exersise we are going to use housing data from Ames, Iowa, available on the `modeldata` package.
+
+
+Let's load the packages:
+
+```{r}
+# install.packages("pacman") #run this line if you use Google Colab
+```
+
+```{r include=FALSE}
+#packages
+require("pacman")
+p_load("tidyverse", #data wrangling
+       "modeldata", # package with the housing data from Ames, Iowa
+       "vtable", #descriptive stats package
+       "stargazer", #tidy regression results,
+       "sf", #handling spatial data
+       "spatialsample") #spatial CV
+
+
+```
+
+ And the data set:
+
+```{r}
+data("ames", package = "modeldata")
+```
+
+The Ames housing data is a normal [tibble](https://tibble.tidyverse.org/).
+
+```{r}
+head(ames)
+```
+
+The description of the variables can be viewed here: https://jse.amstat.org/v19n3/decock/DataDocumentation.txt
+
+
+### Modelling Prices
+
+
+Let's say that the logarithm of sale price of these houses is a linear model on their living area (size),  the type of house, and the Neighboorhood:
+
+
+```{r}
+ames_sub<-ames %>% select(Sale_Price, Gr_Liv_Area,  Bldg_Type,Neighborhood)
+```
+
+```{r}
+class(ames_sub$Bldg_Type)
+```
+
+```{r}
+sumtable(ames_sub, out ="return")
+```
+
+<!-- #region -->
+We can write the linear model as:
+
+
+$$
+log(Sale\,Price)_{ij}= \beta_0 + \beta_1 Living\,Area_i+\beta_2 I(Two-family\,Conversion=1) +
+\beta_3 I(Duplex=1) +\beta_4 I(Townhouse\,End\,Unit=1)+\beta_5 I(Townhouse\,Inside\,Unit) + \alpha_j + u_{ij} 
+$$
+<!-- #endregion -->
+
+and we can run the linear regression:
+
+```{r}
+reg1<-lm(log(Sale_Price) ~ Gr_Liv_Area  +  Bldg_Type + Neighborhood,data=ames_sub)
+stargazer(reg1,type="text")
+```
+
+<iframe src="m.html"></iframe>
+
+
+## Spatial Dependence
+
+
+We are going to turn  our data into an [sf](https://r-spatial.github.io/sf/) object to properly handle spatial distance calculations. 
+ 
+ We can transform our Ames data into an sf object using the `sf::st_as_sf()` function:
+
+```{r}
+#For speed I'm going to keep the ten neighbourhoods with most observations
+ames<-ames  %>% filter(Neighborhood %in%c("North_Ames", "College_Creek", "Old_Town", "Edwards", "Somerset", "Northridge_Heights", "Gilbert", "Sawyer", "Northwest_Ames", "Sawyer_West"))
+
+ames_sf <- st_as_sf(
+  ames,
+  # "coords" is in x/y order -- so longitude goes first!
+  coords = c("Longitude", "Latitude"),
+  # Set our coordinate reference system to EPSG:4326,
+  # the standard WGS84 geodetic coordinate reference system
+  crs = 4326
+)
+```
+
+### Interactive Viz
+
+```{r}
+p_load("leaflet")
+
+map<-leaflet() %>% 
+  addTiles() %>%  #capa base
+  addCircles(data=ames_sf) #capa casas
+map 
+```
+
+```{r}
+#Extra steps bc of jupyter notebook (if you are in RStudio, you don't need these steps)
+p_load("htmlwidgets") 
+p_load("IRdisplay")
+saveWidget(map, file="m.html")
+display_html('<iframe width="900" height="700" src="m.html"></iframe>')
+```
+
+### Spatial Autocorrelation
+
+
+This relationship may exhibit spatial autocorrelation across the city of Ames, and we can use any of the several different methods provided by spatialsample to try and investigate it. 
+
+
+
+#### Spatial Buffers
+
+The `spatial_buffer_vfold_cv()` function will perform [spatially buffered cross-validation](https://onlinelibrary.wiley.com/doi/10.1111/geb.12161) with your data:
+
+```{r}
+set.seed(123)
+buffer_folds <- spatial_buffer_vfold_cv(ames_sf, radius=40,buffer=5)
+
+autoplot(buffer_folds)
+```
+
+#### Spatial Blocks
+
+For instance, the `spatial_block_cv()` function will perform [spatial blocking](https://doi.org/10.1111/ecog.02881) with your data:
+
+```{r}
+set.seed(123)
+block_folds <- spatial_block_cv(ames_sf, v = 5)
+
+autoplot(block_folds)
+```
+
+#### Spatial LOOCV
+
+If you already have a sense of what locations in your data are likely to be closely related, you can also use the `spatial_leave_location_out_cv()` function to perform [leave-location-out cross-validation](https://doi.org/10.1016/j.envsoft.2017.12.001). 
+
+For instance, we can split the Ames data into folds based on neighborhoods using this function:
+
+```{r}
+set.seed(123)
+
+location_folds <- 
+  spatial_leave_location_out_cv(
+    ames_sf,
+    group = Neighborhood
+  )
+```
+
+```{r}
+autoplot(location_folds)
+```
+
+```{r}
+p_load("purrr")
+
+walk(location_folds$splits, function(x) print(autoplot(x)))
+```
+
+## Full implementation with Elastic Net
+
+\begin{align}
+min_{\beta} EN(\beta) &= \sum_{i=1}^n (y_i-\beta_0 - \sum_{j=1}^p x_{ij}\beta_j)^2  + \lambda\left(\alpha \sum_{j=1}^p |\beta_j| + \frac{(1-\alpha)}{2} \sum_{j=1}^p (\beta_j)^2\right)
+\end{align}
+
+```{r}
+folds<-list()
+for(i in 1:10){
+  folds[[i]]<- location_folds$splits[[i]]$in_id
+}
+
+```
+
+```{r}
+head(folds[[1]])
+```
+
+```{r}
+
+folds[[2]][!(folds[[2]]%in%folds[[1]])]
+```
+
+```{r}
+
+p_load("caret")
+
+fitControl<-trainControl(method ="cv",
+                         index=folds)
+
+
+```
+
+```{r}
+EN<-train(log(Sale_Price) ~ Gr_Liv_Area  +  Bldg_Type ,
+             data=ames_sf,
+             method = 'glmnet', 
+             trControl = fitControl,
+             tuneGrid = expand.grid(alpha =seq(0,1,length.out = 20),
+                                    lambda = seq(0.001,0.2,length.out = 50))
+              ) 
+```
+
+```{r}
+EN
+```
+
+```{r}
+EN$bestTune
+```
+
+```{r}
+EN$results$RMSE[which.min(EN$results$lambda)]
+```
+
+```{r}
+fitControl2<-trainControl(method ="cv",
+                         number=5)
+
+EN2<-train(log(Sale_Price) ~ Gr_Liv_Area  +  Bldg_Type ,
+             data=ames_sf,
+             method = 'glmnet', 
+             trControl = fitControl2,
+             tuneGrid = expand.grid(alpha =seq(0,1,length.out = 20),
+                                    lambda = seq(0.001,0.2,length.out = 50))
+              ) 
+
+EN2$results$RMSE[which.min(EN2$results$lambda)]
+```
+
+## Example Problem Set
+
+```{r}
+test<- ames_sf  %>% filter(Neighborhood=="North_Ames")
+
+train<-ames_sf  %>% filter(Neighborhood!="North_Ames")
+```
+
+```{r}
+set.seed(123)
+
+location_folds_train <- 
+  spatial_leave_location_out_cv(
+    train,
+    group = Neighborhood
+  )
+
+
+```
+
+```{r}
+autoplot(location_folds_train)
+```
+
+```{r}
+folds_train<-list()
+for(i in 1:length(location_folds_train$splits)){
+  folds_train[[i]]<- location_folds_train$splits[[i]]$in_id
+}
+
+```
+
+```{r}
+fitControl_tp<-trainControl(method ="cv",
+                         index=folds_train)
+
+
+```
+
+```{r}
+EN_tp<-train(log(Sale_Price) ~ Gr_Liv_Area  +  Bldg_Type ,
+             data=train,
+             method = 'glmnet', 
+             trControl = fitControl_tp,
+             metric="MAE",
+             tuneGrid = expand.grid(alpha =seq(0,1,length.out = 20),
+                                    lambda = seq(0.001,0.2,length.out = 50))
+              ) 
+```
+
+```{r}
+EN_tp
+```
+
+```{r}
+EN_tp$bestTune
+```
+
+```{r}
+test$log_price_hat<-predict(EN_tp,newdata = test)
+```
+
+```{r}
+head(test  %>% select(Sale_Price,log_price_hat)  %>% st_drop_geometry())
+```
+
+```{r}
+test<- test  %>% mutate(price_hat=exp(log_price_hat))
+head(test  %>% select(Sale_Price,log_price_hat,price_hat)  %>% st_drop_geometry())
+```
+
+#### What is Kaggle's score?
+
+```{r}
+#MAE
+mean(abs(test$Sale_Price-test$price_hat))
+```
+
+```{r}
+#MAE
+mean(abs(test$Sale_Price-round(test$price_hat)))
+```
