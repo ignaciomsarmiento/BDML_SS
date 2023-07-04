@@ -171,7 +171,7 @@
 \begin{document}
 
 
-\title{Árboles (CARTs)}
+\title{Árboles (CARTs), Bagging and Random Forests}
 \subtitle{Big Data y Machine Learning para Economía Aplicada}
 \date{}
 
@@ -223,13 +223,16 @@
 
 
 \end{frame}
-
 %----------------------------------------------------------------------%
-\section{Árboles: Qué hacen?}
+%----------------------------------------------------------------------%
+\section{Árboles}
+%----------------------------------------------------------------------%
+%----------------------------------------------------------------------%
+\subsection{¿Qué hacen?}
 %----------------------------------------------------------------------%
 %----------------------------------------------------------------------%
 \begin{frame}[fragile]
-\frametitle{Árboles: que hacen?}
+\frametitle{¿Qué hacen?}
 
 
 \begin{columns}[T] % align columns
@@ -265,7 +268,7 @@
 
 %----------------------------------------------------------------------%
 \begin{frame}[fragile]
-\frametitle{Árboles: que hacen?}
+\frametitle{¿Qué hacen?}
 
 
 \begin{columns}[T] % align columns
@@ -302,7 +305,7 @@
 \end{frame}
 %----------------------------------------------------------------------%
 \begin{frame}[fragile]
-\frametitle{Árboles: que hacen?}
+\frametitle{¿Qué hacen?}
 
 
 \begin{columns}[T] % align columns
@@ -345,7 +348,7 @@
 
 %----------------------------------------------------------------------%
 \begin{frame}[fragile]
-\frametitle{Árboles: que hacen?}
+\frametitle{¿Qué hacen?}
 
 
 
@@ -376,16 +379,16 @@
 
 %----------------------------------------------------------------------%
 %----------------------------------------------------------------------%
-\section{¿Cómo lo hacen?}
+\subsection{¿Cómo lo hacen?}
 %----------------------------------------------------------------------%
 
 %----------------------------------------------------------------------%
 \begin{frame}[fragile]
 \frametitle{¿Cómo construimos un árbol de decisión?}
-\framesubtitle{Problemas de regresión}
+
 
 \begin{itemize}
-\item Datos: $y_{n\times 1}$  y $X_{n\times p}$ 
+\item Datos: $y_{n\times 1}$  y $X_{n\times k}$ 
 \medskip
 \item Definiciones
 \medskip
@@ -426,7 +429,7 @@ R_1(j,s)=\{X|X_j\leq s\} \,\,\, \& \,\,\, R_2(j,s)=\{X|X_j > s\}
 
 \end{frame}
 %----------------------------------------------------------------------%
-\section{Sobreajuste}
+\subsection{Sobreajuste}
 %----------------------------------------------------------------------%
 \begin{frame}[fragile]
 \frametitle{Sobreajuste}
@@ -534,7 +537,7 @@ R_1(j,s)=\{X|X_j\leq s\} \,\,\, \& \,\,\, R_2(j,s)=\{X|X_j > s\}
 \end{frame}
 %----------------------------------------------------------------------%
 \begin{frame}[fragile]
-\frametitle{Árboles: cómo lo hacen?}
+\frametitle{Pruning (poda)}
 \framesubtitle{Algoritmo Completo}
 
 
@@ -570,7 +573,7 @@ R_1(j,s)=\{X|X_j\leq s\} \,\,\, \& \,\,\, R_2(j,s)=\{X|X_j > s\}
 
 %----------------------------------------------------------------------%
 \begin{frame}[fragile]
-\frametitle{Comentarios Finales}
+\frametitle{Comentarios sobre Árboles}
 
 \begin{itemize}
 \item Pros: 
@@ -590,6 +593,91 @@ R_1(j,s)=\{X|X_j\leq s\} \,\,\, \& \,\,\, R_2(j,s)=\{X|X_j > s\}
     
   \end{itemize}
 \end{itemize}
+
+\end{frame}
+
+%----------------------------------------------------------------------%
+\section{Bagging }
+%----------------------------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{Bagging}
+
+\begin{itemize}
+  \item Problema con CART: pocos robustos.
+  \medskip
+   \item Podemos mejorar mucho el rendimiento mediante la agregación 
+   \medskip
+     \item Idea: la varianza del promedio es menor que la de una sola predicción.
+\end{itemize}
+
+\end{frame}
+
+
+%----------------------------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{Bagging}
+\begin{itemize}
+   \item Bagging:
+    \begin{itemize}
+       \item Obtenga repetidamente muestras aleatorias $(X_i^b,Y_i^b)_{i=1}^N$ de la muestra observada (bootstrap).
+       \medskip
+       \item Para cada muestra, ajuste un árbol de regresión $\hat{f}^b(x)$
+       \medskip
+       \item Promedie las muestras de bootstrap 
+        \begin{align}
+         \hat{f}_{bag} =\frac{1}{B}\sum_{b=1}^B \hat{f}^b(x)
+        \end{align}
+      \end{itemize}
+  \item Básicamente estamos suavizando las predicciones.
+
+  \end{itemize}
+
+\end{frame}
+
+%----------------------------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{Bagging}
+
+
+
+\begin{figure}[H] \centering
+            \captionsetup{justification=centering}
+              \includegraphics[scale=0.4]{figures/twocart_gboost.jpeg}
+              % \\
+              % \tiny
+              % \url{source: https://xgboost.readthedocs.io/en/latest/tutorials/model.html}
+ \end{figure}
+
+\end{frame}
+%----------------------------------------------------------------------%
+\subsection{Random Forests }
+%----------------------------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{Random Forests}
+
+\begin{itemize}
+  \item Problema con el bagging: si hay un predictor fuerte, diferentes árboles son muy similares entre sí. Si hay alta correlación, ¿está realmente reduciendo la varianza?
+\bigskip
+\item Bosques (forests): reduce la correlación entre los árboles  en el boostrap.
+\bigskip
+\item Si hay $p$ predictores, en cada partición use solo  $m <p$ predictores, elegidos al azar.
+\bigskip
+\item Bagging es forests con $m = p$ (usando todo los predictores en cada partición).
+\bigskip
+\item Tipicamente $m = \sqrt(p)$
+\end{itemize}
+
+\end{frame}
+
+%----------------------------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{Ejemplo}
+\begin{figure}[H] \centering
+  \centering
+  \includegraphics[scale=0.35]{figures/baticomputer_meme.jpg}
+  \\
+  \tiny photo from \url{https://www.dailydot.com/parsec/batman-1966-labels-tumblr-twitter-vine/}
+\end{figure}
 
 \end{frame}
 
