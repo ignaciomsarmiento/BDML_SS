@@ -5,6 +5,8 @@
 #folders
 Lecture03/Notas
 Lecture09/extra
+Lecture09/*.Rmd
+Lecture09/*.html
 Lecture08/ss08_flatten.pdf
 ### macOS ###
 # General
