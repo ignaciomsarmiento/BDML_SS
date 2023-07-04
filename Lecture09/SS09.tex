@@ -449,7 +449,7 @@ R_1(j,s)=\{X|X_j\leq s\} \,\,\, \& \,\,\, R_2(j,s)=\{X|X_j > s\}
 \begin{itemize}
   \item Fijar la profundidad del árbol.
   \medskip
-  \item Fijar la cantidad de hojas.
+  \item Fijar la cantidad de hojas (nodos terminales, regiones).
   \medskip
   \item Fijar la mínima cantidad de datos que están contenidos dentro de cada hoja. 
 \medskip
@@ -571,115 +571,6 @@ R_1(j,s)=\{X|X_j\leq s\} \,\,\, \& \,\,\, R_2(j,s)=\{X|X_j > s\}
 \end{frame}
 
 
-%----------------------------------------------------------------------%
-\begin{frame}[fragile]
-\frametitle{Comentarios sobre Árboles}
-
-\begin{itemize}
-\item Pros: 
-  \begin{itemize}
-    \item Los árboles son muy fáciles de explicar a las personas (probablemente incluso más fáciles que la regresión lineal)
-    \medskip
-    \item Los árboles se pueden trazar gráficamente y son fácilmente interpretados incluso por no expertos. Variables más importantes en la parte superior
-  \end{itemize}
-
-\bigskip
-\item  Cons:
-  \begin{itemize}
-    
-    \item Si la estructura es lineal, CART no funciona bien
-    \medskip
-    \item Los árboles no son muy robustos 
-    
-  \end{itemize}
-\end{itemize}
-
-\end{frame}
-
-%----------------------------------------------------------------------%
-\section{Bagging }
-%----------------------------------------------------------------------%
-\begin{frame}[fragile]
-\frametitle{Bagging}
-
-\begin{itemize}
-  \item Problema con CART: pocos robustos.
-  \medskip
-   \item Podemos mejorar mucho el rendimiento mediante la agregación 
-   \medskip
-     \item Idea: la varianza del promedio es menor que la de una sola predicción.
-\end{itemize}
-
-\end{frame}
-
-
-%----------------------------------------------------------------------%
-\begin{frame}[fragile]
-\frametitle{Bagging}
-\begin{itemize}
-   \item Bagging:
-    \begin{itemize}
-       \item Obtenga repetidamente muestras aleatorias $(X_i^b,Y_i^b)_{i=1}^N$ de la muestra observada (bootstrap).
-       \medskip
-       \item Para cada muestra, ajuste un árbol de regresión $\hat{f}^b(x)$
-       \medskip
-       \item Promedie las muestras de bootstrap 
-        \begin{align}
-         \hat{f}_{bag} =\frac{1}{B}\sum_{b=1}^B \hat{f}^b(x)
-        \end{align}
-      \end{itemize}
-  \item Básicamente estamos suavizando las predicciones.
-
-  \end{itemize}
-
-\end{frame}
-
-%----------------------------------------------------------------------%
-\begin{frame}[fragile]
-\frametitle{Bagging}
-
-
-
-\begin{figure}[H] \centering
-            \captionsetup{justification=centering}
-              \includegraphics[scale=0.4]{figures/twocart_gboost.jpeg}
-              % \\
-              % \tiny
-              % \url{source: https://xgboost.readthedocs.io/en/latest/tutorials/model.html}
- \end{figure}
-
-\end{frame}
-%----------------------------------------------------------------------%
-\subsection{Random Forests }
-%----------------------------------------------------------------------%
-\begin{frame}[fragile]
-\frametitle{Random Forests}
-
-\begin{itemize}
-  \item Problema con el bagging: si hay un predictor fuerte, diferentes árboles son muy similares entre sí. Si hay alta correlación, ¿está realmente reduciendo la varianza?
-\bigskip
-\item Bosques (forests): reduce la correlación entre los árboles  en el boostrap.
-\bigskip
-\item Si hay $p$ predictores, en cada partición use solo  $m <p$ predictores, elegidos al azar.
-\bigskip
-\item Bagging es forests con $m = p$ (usando todo los predictores en cada partición).
-\bigskip
-\item Tipicamente $m = \sqrt(p)$
-\end{itemize}
-
-\end{frame}
-
-%----------------------------------------------------------------------%
-\begin{frame}[fragile]
-\frametitle{Ejemplo}
-\begin{figure}[H] \centering
-  \centering
-  \includegraphics[scale=0.35]{figures/baticomputer_meme.jpg}
-  \\
-  \tiny photo from \url{https://www.dailydot.com/parsec/batman-1966-labels-tumblr-twitter-vine/}
-\end{figure}
-
-\end{frame}
 
 %----------------------------------------------------------------------%
 %----------------------------------------------------------------------%
