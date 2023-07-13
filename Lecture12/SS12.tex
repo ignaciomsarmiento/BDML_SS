@@ -291,6 +291,16 @@
 \begin{frame}[fragile]
 \frametitle{Regularization for Logit}
 
+\begin{align}
+\min_{\beta_0,\dots,\beta_k} \frac{1}{N} \sum_{i=1}^{N} l(y_i,\beta_0 + x_{i1}\beta_1 + \dots + x_{ik}\beta_k) + \lambda\left( \alpha \sum_{j=1}^k |\beta_j| + (1-\alpha)\ \sum_{j=1}^k (\beta_j)^2/2 \right)
+\end{align}
+
+\begin{itemize}
+ \item Si $\alpha=1$ Lasso
+ \medskip
+ \item Si $\alpha=0$ Ridge 
+\end{itemize}
+
 \end{frame}
 %----------------------------------------------------------------------%
 \subsection{KNN}
@@ -537,7 +547,7 @@ m(X)     &= f(X|Y=1)\pi(Y=1) + f(X|Y=0)(1-\pi(Y=1))
   &= log(\frac{\pi(Y=1)}{(1-\pi(Y=1))}+\mu^2_1-\mu^2_0-2(\mu_1-\mu_0)x \\
   &= \gamma_1 +\gamma_2 X
   \end{align}  
-  \item under the assumption of equal variance the discrimination function is lineal
+  \item under the assumption of equal variance the discrimination function is linear
   \item Note: logit estimates $\gamma_1$ and $\gamma_2$
 \end{itemize}
 \end{frame}
